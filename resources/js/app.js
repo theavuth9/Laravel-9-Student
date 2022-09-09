@@ -17,8 +17,12 @@ const app = createApp({});
 
 import StudentList from './components/StudentList.vue';
 import StudentForm from './components/StudentForm.vue';
+import LoginForm from './components/LoginForm.vue';
+import NavigationMenu from './components/NavigationMenu.vue';
 app.component('student-list', StudentList);
 app.component('student-form', StudentForm);
+app.component('login-form', LoginForm);
+app.component('navigation-menu', NavigationMenu);
 
 /**
  * The following block of code may be used to automatically register your

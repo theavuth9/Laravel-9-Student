@@ -63,59 +63,53 @@ import axios from 'axios';
         methods: {
 
             save() {
-                axios.get('/sanctum/csrf-cookie').then( response => {
-                    
-                    const config = {
-                        headers: {
-                            'content-type': 'multipart/form-data'
-                        }
+                const config = {
+                    headers: {
+                        'content-type': 'multipart/form-data',
+                        Authorization: localStorage.getItem( 'token' )
                     }
+                }
 
-                    /**
-                     * Append file into student.profile
-                     */
-                    this.student.profile = this.file;
+                /**
+                 * Append file into student.profile
+                 */
+                this.student.profile = this.file;
 
-                    /**
-                     * Handling for save data
-                     * through API
-                     */
-                    axios.post( `/api/students/save`, this.student, config )
-                        .then( result => {
+                /**
+                 * Handling for save data
+                 * through API
+                 */
+                axios.post( `/api/students/save`, this.student, config )
+                    .then( result => {
 
-                            if (result.data.status == 'success') {
-                                window.location.href = '/home';
-                            }
+                        if (result.data.status == 'success') {
+                            window.location.href = '/home'
+                        }
 
-                        })
-                        .catch( error => this.errors = error.response.data.errors )
+                    })
+                    .catch( error => this.errors = error.response.data.errors )
 
-                })
-                
             },
 
             onChange(e) {
-                this.file = e.target.files[0];
+                this.file = e.target.files[0]
             },
 
             loadStudent( id ) {
-                axios.get('/sanctum/csrf-cookie').then( response => {
-                    
-                    /**
-                     * Handling for save data
-                     * through API
-                     */
-                    axios.get( `/api/students/${id}` )
-                        .then( result => {
+                /**
+                 * Handling for save data
+                 * through API
+                 */
+                axios.get( `/api/students/${id}`, { headers: { Authorization: localStorage.getItem( 'token' ) } } )
+                    .then( result => {
 
-                            if( result.data.status === 'success' ) {
-                                this.student = result.data.data;
-                            }
+                        if( result.data.status === 'success' ) {
+                            this.student = result.data.data
+                        }
 
-                        })
-                        .catch( error => this.errors = error.response.data.errors )
+                    })
+                    .catch( error => this.errors = error.response.data.errors )
 
-                })
             }
 
         }

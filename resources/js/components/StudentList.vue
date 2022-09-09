@@ -18,7 +18,7 @@
             </thead>
             <tbody>
                 <tr v-if="students.length === 0">
-                    <td class="text-center" colspan="4">No Student</td>
+                    <td class="text-center" colspan="6">No Student</td>
                 </tr>
                 <tr v-for="student of students" :key="student.id">
                     <td>
@@ -63,14 +63,30 @@ import axios from 'axios';
 
             fetchStudents() {
 
-                axios.get('/sanctum/csrf-cookie').then( response => {
-                    
-                    axios.get( `/api/students` )
+                window.axios.get( `/api/students`, { headers: { Authorization: localStorage.getItem( 'token' ) } } )
+                    .then( result => {
+
+                        if (result.data.status == 'success') {
+
+                            this.students = result.data.data;
+
+                        } else {
+
+                            this.message = 'Woops, something was wrong!!';
+
+                        }
+
+                    }).catch( error => this.message = error )
+            },
+
+            doDelete( id ) {
+                if (id) {
+                    axios.delete( `/api/students/${id}/delete`, { headers: { Authorization: localStorage.getItem( 'token' ) } } )
                         .then( result => {
 
                             if (result.data.status == 'success') {
 
-                                this.students = result.data.data;
+                                window.location.reload();
 
                             } else {
 
@@ -80,34 +96,6 @@ import axios from 'axios';
 
                         })
                         .catch( error => this.message = error )
-
-                })
-                
-            },
-
-            doDelete( id ) {
-                if (id) {
-
-                    axios.get('/sanctum/csrf-cookie').then( response => {
-                    
-                        axios.delete( `/api/students/${id}/delete` )
-                            .then( result => {
-
-                                if (result.data.status == 'success') {
-
-                                    window.location.reload();
-
-                                } else {
-
-                                    this.message = 'Woops, something was wrong!!';
-
-                                }
-
-                            })
-                            .catch( error => this.message = error )
-
-                    })
-                    
                 }
             }
         }
